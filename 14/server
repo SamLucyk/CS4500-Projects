@@ -1,0 +1,73 @@
+#! /usr/bin/env python
+
+import sys
+import SocketServer
+import json
+import threading
+import time
+from player_proxy import PlayerProxy
+from dealer.dealer import Dealer
+from dealer.globals import *
+from convert import *
+
+player_proxies = []
+end_game = False
+
+
+def main(hostname, port):
+    """
+    Creates a TCP server and waits for client sign ups before running a game
+    :param hostname: String representing the TCP server hostname
+    :param port: String representing the TCP server port
+    :effect Runs a game when maximum players signed up or wait time expires, then shuts down
+    """
+    server = ThreadedTCPServer((hostname, int(port)), ThreadedTCPRequestHandler)
+    server_thread = threading.Thread(target=server.serve_forever)
+    server_thread.start()
+    start_time = time.time()
+    while len(player_proxies) < LOP_MAX and time.time() - start_time < SIGNUP_TIME:
+        continue
+    run_game()
+    server.shutdown()
+
+
+def run_game():
+    """
+    Creates a Dealer with the currently signed-up Proxy_Players and runs a game
+    :effect: Terminates request handlers and prints game results on server console
+    """
+    global end_game
+    dealer = Dealer.create_initial(player_proxies)
+    result = dealer.run_game()
+    end_game = True
+    print result
+
+
+class ThreadedTCPServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
+    """
+    A TCP Server capable of handling clients on separate threads
+    """
+    allow_reuse_address = True
+    pass
+
+
+class ThreadedTCPRequestHandler(SocketServer.BaseRequestHandler):
+    """
+    Handles client requests to the socket server
+    """
+    def handle(self):
+        """
+        Listens to client sign ups and creates ProxyPlayers for them if a valid sign-up message is received.
+        :effect: Updates list of ProxyPlayers
+        """
+        signup_message = Convert.listen(self.request, time_out=False)
+        if isinstance(signup_message, basestring):
+            print signup_message
+            self.request.sendall(json.dumps(SIGNUP_RSP))
+            player_proxies.append(PlayerProxy(signup_message, self))
+            while not end_game:
+                continue
+
+
+if __name__ == "__main__":
+    main(sys.argv[1], sys.argv[2])

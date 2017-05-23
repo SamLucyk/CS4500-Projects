@@ -1,0 +1,65 @@
+[[
+      ["id", 1],
+      ["species",
+        [
+          [
+            ["food", 0],
+            ["body", 2],
+            ["population", 3],
+            ["traits", ["carnivore"]]
+          ]
+        ]
+      ],
+      ["bag", 3],
+      ["cards",[[4, "carnivore"],
+                [1, "long-neck"],
+                [2, "ambush"]]
+      ]
+    ],
+  [
+    [
+      [
+        ["food", 0],
+        ["body", 2],
+        ["population", 3],
+        ["traits", ["carnivore"]]
+      ],
+      [
+        ["food", 0],
+        ["body", 3],
+        ["population", 1],
+        ["traits", ["long-neck"]]
+      ]
+    ],
+    [
+      [
+        ["food", 0],
+        ["body", 2],
+        ["population", 3],
+        ["traits", ["carnivore"]]
+      ],
+      [
+        ["food", 0],
+        ["body", 3],
+        ["population", 1],
+        ["traits", ["long-neck"]]
+      ]
+    ]
+  ],
+  [
+    [
+      [
+        ["food", 0],
+        ["body", 2],
+        ["population", 3],
+        ["traits", ["carnivore"]]
+      ],
+      [
+        ["food", 0],
+        ["body", 3],
+        ["population", 1],
+        ["traits", ["long-neck"]]
+      ]
+    ]
+  ]
+]
